@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+
+<refentry>
+
+<refmeta>
+<refentrytitle>fot</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv id="name">
+<refname>fot</refname>
+<refpurpose>wrap text from (fortune cookie) files</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="synopsis">
+<cmdsynopsis>
+<command>fot</command>
+<arg choice="opt">-w <replaceable>width</replaceable></arg>
+<arg choice="opt" rep="repeat">file</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1 id='description'>
+<title>Description</title>
+<para>
+<command>fot</command> reformats the text in <replaceable>file</replaceable> (or standard input if <replaceable>file</replaceable> isn't given) by attempting to wrap the text into lines containing at most <replaceable>width</replaceable> characters. <command>fot</command> writes the wrapped text to standard output.
+</para>
+<variablelist remap="IP">
+<varlistentry>
+<term><option>-w <replaceable>width</replaceable></option></term>
+<listitem>
+<para>maximum line width (the default being 78 characters)</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>
+Unlike <command>fold</command>, <command>fot</command> does not end lines mid-word; it only breaks lines at whitespace characters. Unlike <command>fmt</command>, <command>fot</command> recognises and preserves "%" characters appearing on their own line as special separators, and is idempotent (that is, running text through <command>fot</command> twice with the same settings should give the same result as running it through <command>fot</command> just once).
+</para>
+</refsect1>
+
+<refsect1 id="limitations">
+<title>Limitations</title>
+
+<refsect2>
+<title>Deliberate</title>
+<para>
+<command>fot</command> is meant to be simple. Although analogous to <command>fmt</command>, <command>fot</command> doesn't strive for "optimal" output &mdash; instead it takes the greedy first-fit approach of outputting each word of input as it comes, starting a new line whenever the current line's about to become too long.
+</para>
+</refsect2>
+
+<refsect2>
+<title>Unfixable</title>
+<para>
+<command>fot</command> has trouble with poetry and song lyrics. Lines of verse should remain separate but <command>fot</command> merges them into single paragraphs. Unfortunately this seems non-trivial to fix in general without false positives and over-splitting of normal prose.
+</para>
+<para>
+Similarly, <command>fot</command> doesn't (and most likely couldn't) account for all of the ways indentation is used. When run on a heterogeneous collection of fortune cookie files, therefore, it's likely to produce some unattractive output. (I tried ameliorating this by having output lines adopt the indentation of the <emphasis>subsequent</emphasis> line of input rather than the <emphasis>current</emphasis> input line. But that proved worse.)
+</para>
+</refsect2>
+
+<refsect2>
+<title>Potentially fixable</title>
+<para>
+To handle Unicode <command>fot</command> treats text as a string of wide characters. This improves on GNU <command>fmt</command> and GNU <command>fold</command>, both of which equate characters with bytes and prematurely shorten lines of non-Latin text. GNU <command>fold</command> even chops multibyte characters in half! <command>fot</command> should do none of these things, but it has other issues. Wide characters are too small to represent all Unicode code points on Microsoft Windows, so there may be occasional trouble there. <command>fot</command> may also underestimate the width of lines because it assumes each character it reads fits into a single column on-screen.
+(One could rewrite <command>fot</command> to use
+<citerefentry>
+<refentrytitle>wcwidth</refentrytitle><manvolnum>3</manvolnum>
+</citerefentry>
+to try to better estimate the width of characters but that would make it non-compliant with ANSI C99.)
+Because <command>fot</command> refuses to break whitespace-free lines it can have difficulty with non-English text that doesn't separate words or ideograms with whitespace.
+I'm also unsure of how <command>fot</command> fares with Arabic and other right-to-left scripts.
+</para>
+<para>
+Finally, <command>fot</command> is slower than GNU <command>fmt</command> (unless the maximum line width is high). This might be down to using wide characters.
+</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 id="author">
+<title>Author</title>
+<para>Written by Drew Thomas.</para>
+</refsect1>
+
+<refsect1 id="copyright">
+<title>Copyright</title>
+<para>Both <command>fot</command> and this documentation are public domain; the author disclaims all copyright.</para>
+</refsect1>
+
+<refsect1 id="seealso">
+<title>See also</title>
+<para>
+<citerefentry>
+<refentrytitle>fmt</refentrytitle><manvolnum>1</manvolnum>
+</citerefentry>,
+<citerefentry>
+<refentrytitle>fold</refentrytitle><manvolnum>1</manvolnum>
+</citerefentry>
+</para>
+</refsect1>
+
+</refentry>

@@ -1,0 +1,6 @@
+.hg/
+.hgignore
+fot
+fot.1.gz
+fot.ps
+samples/
