@@ -1,6 +1,9 @@
+# don't trouble yourself with the existing Hg repository here
 .hg/
 .hgignore
+# don't track the final compiled program and documentation files
 fot
 fot.1.gz
 fot.ps
+# ignore the big sample input files I use to test the program
 samples/
